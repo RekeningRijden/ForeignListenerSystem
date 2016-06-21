@@ -49,7 +49,7 @@ public class StolenCarsListener implements MessageListener {
     @PostConstruct
     public void init() {
         try {
-            System.out.println("Start listening " + getComputerName());
+            Logger.getLogger(StolenCarsListener.class.getName()).log(Level.INFO, "Start listening " + getComputerName());
             ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://192.168.24.130:61616");
             RedeliveryPolicy policy = connectionFactory.getRedeliveryPolicy();
             policy.setInitialRedeliveryDelay(30000);
@@ -61,7 +61,7 @@ public class StolenCarsListener implements MessageListener {
             Topic topic = session.createTopic("topicBelgiumStolenCars");
             consumer = session.createDurableSubscriber(topic, "Portugal-" + getComputerName());
             consumer.setMessageListener(this);
-            System.out.println("Started");
+            Logger.getLogger(StolenCarsListener.class.getName()).log(Level.INFO, "Started listening " + getComputerName());
         } catch (JMSException ex) {
             Logger.getLogger(StolenCarsListener.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -82,7 +82,7 @@ public class StolenCarsListener implements MessageListener {
     public void onMessage(Message message) {
         try {
             TextMessage textMessage = (TextMessage) message;
-            System.out.println("Received message: " + textMessage.getText());
+            Logger.getLogger(StolenCarsListener.class.getName()).log(Level.INFO, "Received message: " + textMessage.getText());
             JSONObject json = new JSONObject(textMessage.getText());
             double lati = (double) json.get("lastLocationLatitude");
             double longi = (double) json.get("lastLocationLongitude");
@@ -99,12 +99,18 @@ public class StolenCarsListener implements MessageListener {
                 stolenRequest.setLastPosition(position);
                 if (apiConnection.addStolenCar(stolenRequest)) {
                     message.acknowledge();
+                    Logger.getLogger(StolenCarsListener.class.getName()).log(Level.INFO, "Stolen car successful added");
+                } else {
+                    Logger.getLogger(StolenCarsListener.class.getName()).log(Level.INFO, "Stolen car add failed");
                 }
             } else {
                 DeleteStolenRequest deleteStolenRequest = new DeleteStolenRequest();
                 deleteStolenRequest.setCarIdentifier(licenceplate);
                 if (apiConnection.removeStolenCar(deleteStolenRequest)) {
                     message.acknowledge();
+                    Logger.getLogger(StolenCarsListener.class.getName()).log(Level.INFO, "Stolen car successful deleted");
+                } else {
+                    Logger.getLogger(StolenCarsListener.class.getName()).log(Level.INFO, "Stolen car delete failed");
                 }
             }
         } catch (JMSException ex) {
