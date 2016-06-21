@@ -49,8 +49,8 @@ public class ApiConnection {
             HttpClient httpClient = HttpClientBuilder.create().build();
             HttpResponse response = httpClient.execute(post);
 
-            System.out.println("POST: " + response.getStatusLine().getStatusCode());
-            System.out.println(EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
+            Logger.getLogger(ApiConnection.class.getName()).log(Level.INFO, "POST: " + response.getStatusLine().getStatusCode());
+            Logger.getLogger(ApiConnection.class.getName()).log(Level.INFO, EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
 
             if (response.getStatusLine().getStatusCode() == 200) {
                 return true;
@@ -74,8 +74,8 @@ public class ApiConnection {
             HttpClient httpClient = HttpClientBuilder.create().build();
             HttpResponse response = httpClient.execute(post);
 
-            System.out.println("DELETE: " + response.getStatusLine().getStatusCode());
-            System.out.println(EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
+            Logger.getLogger(ApiConnection.class.getName()).log(Level.INFO, "DELETE: " + response.getStatusLine().getStatusCode());
+            Logger.getLogger(ApiConnection.class.getName()).log(Level.INFO, EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
 
             if (response.getStatusLine().getStatusCode() == 200) {
                 return true;
