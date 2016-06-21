@@ -1,0 +1,6 @@
+/IntegrationSystemApi/target/
+/target/
+/.idea/
+/IntegrationSystemApi/.idea/
+*.iml
+.DS_Store
